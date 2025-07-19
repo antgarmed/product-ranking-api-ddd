@@ -7,7 +7,9 @@ import java.util.Map;
 import com.example.backendtools.products.domain.Product;
 import com.example.backendtools.products.domain.ProductRepository;
 import com.example.backendtools.products.domain.RankingCriterion;
+import com.example.backendtools.shared.domain.UseCase;
 
+@UseCase
 public class GetRankedProductsQueryHandler {
     private final ProductRepository productRepository;
     private final Map<String, RankingCriterion> criteria;
