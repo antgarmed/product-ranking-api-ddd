@@ -7,11 +7,11 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-public class StockTest {
+public class ProductStockTest {
     @Test
     void shouldReturnCorrectCountOfSizesWithStockWhenOneSizeIsZero() {
         // Arrange
-        Stock stock = Stock.of(Map.of(
+        ProductStock stock = ProductStock.of(Map.of(
                 "S", 50,
                 "M", 0,
                 "L", 10));
@@ -34,6 +34,6 @@ public class StockTest {
         // Act & Assert
         assertThrows(
                 IllegalArgumentException.class,
-                () -> Stock.of(invalidStockMap));
+                () -> ProductStock.of(invalidStockMap));
     }
 }

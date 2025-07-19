@@ -6,14 +6,14 @@ import java.util.Objects;
 import lombok.Value;
 
 @Value
-public final class Stock {
+public final class ProductStock {
     Map<String, Integer> sizeQuantities;
 
-    private Stock(Map<String, Integer> sizeQuantities) {
+    private ProductStock(Map<String, Integer> sizeQuantities) {
         this.sizeQuantities = sizeQuantities;
     }
 
-    public static Stock of(Map<String, Integer> sizeQuantities) {
+    public static ProductStock of(Map<String, Integer> sizeQuantities) {
         Objects.requireNonNull(sizeQuantities, "Size quantities map cannot be null");
 
         boolean hasNegativeStock = sizeQuantities.values().stream()
@@ -23,7 +23,7 @@ public final class Stock {
             throw new IllegalArgumentException("Stock quantities cannot be negative");
         }
 
-        return new Stock(Map.copyOf(sizeQuantities));
+        return new ProductStock(Map.copyOf(sizeQuantities));
     }
 
     public Map<String, Integer> getSizeQuantities() {
