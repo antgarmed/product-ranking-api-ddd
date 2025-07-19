@@ -21,8 +21,7 @@ import com.example.backendtools.products.domain.Product;
 import com.example.backendtools.products.domain.ProductStock;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(GetRankedProductsEndpoint.class)
 public class GetRankedProductsEndpointTest {
@@ -53,5 +52,34 @@ public class GetRankedProductsEndpointTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].product.id").value(1))
                 .andExpect(jsonPath("$[0].score").value(100.0));
+    }
+
+    @Test
+    void shouldReturnBadRequestForInvalidWeightsFormat() throws Exception {
+        // Arrange
+        String weightsParam = "sales:0.8,stock:invalid";
+
+        // Act
+        ResultActions result = mockMvc.perform(get("/products")
+                .queryParam("weights", weightsParam)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Assert
+        result.andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/problem+json"))
+                .andExpect(jsonPath("$.title").value("Bad Request"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.detail")
+                        .value("Invalid weights format. Expected 'key1:value1,key2:value2'."));
+    }
+
+    @Test
+    void shouldReturnNotFoundForWrongEndpoint() throws Exception {
+        // Act
+        ResultActions result = mockMvc.perform(get("/product")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Assert
+        result.andExpect(status().isNotFound());
     }
 }
