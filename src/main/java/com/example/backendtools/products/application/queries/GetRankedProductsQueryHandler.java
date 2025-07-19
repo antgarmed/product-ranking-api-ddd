@@ -9,14 +9,18 @@ import com.example.backendtools.products.domain.ProductRepository;
 import com.example.backendtools.products.domain.RankingCriterion;
 import com.example.backendtools.shared.domain.UseCase;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @UseCase
 public class GetRankedProductsQueryHandler {
     private final ProductRepository productRepository;
     private final Map<String, RankingCriterion> criteria;
 
-    public GetRankedProductsQueryHandler(ProductRepository productRepository, Map<String, RankingCriterion> criteria) {
+    public GetRankedProductsQueryHandler(ProductRepository productRepository,
+            Map<String, RankingCriterion> rankingCriteriaMap) {
         this.productRepository = productRepository;
-        this.criteria = criteria;
+        this.criteria = rankingCriteriaMap;
     }
 
     public List<RankedProductResponse> execute(GetRankedProductsQuery query) {
