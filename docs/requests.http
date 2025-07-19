@@ -1,19 +1,23 @@
-### Get Ranked Products - Example 1: Sales Emphasis
+### Get Ranked Products - Sales Emphasis
 GET http://localhost:8080/products?weights=sales:0.8,stock:0.2
 Accept: application/json
 
-### Get Ranked Products - Example 2: Stock Emphasis
+### Get Ranked Products - Stock Emphasis
 GET http://localhost:8080/products?weights=sales:0.2,stock:0.8
 Accept: application/json
 
-### Get Ranked Products - Example 3: Only Sales (Stock weight is 0)
+### Get Ranked Products - Only Sales (Stock weight is 0)
 GET http://localhost:8080/products?weights=sales:1.0,stock:0.0
 Accept: application/json
 
-### Get Ranked Products - Example 4: Invalid Weight Format (Should return 400 Bad Request)
+### Get Ranked Products - Only Stock (Sales weight is 0)
+GET http://localhost:8080/products?weights=sales:0.0,stock:1.0
+Accept: application/json
+
+### Get Ranked Products - Invalid Weight Format (Should return 400 Bad Request)
 GET http://localhost:8080/products?weights=sales:0.8,stock:invalid
 Accept: application/json
 
-### Get Ranked Products - Example 5: Missing Weights Parameter (Should return 400 Bad Request)
+### Get Ranked Products - Missing Weights Parameter (Should return 400 Bad Request)
 GET http://localhost:8080/products
 Accept: application/json
