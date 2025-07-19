@@ -1,8 +1,8 @@
 package com.example.backendtools.products.application;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.example.backendtools.products.domain.Product;
 import com.example.backendtools.products.domain.ProductRepository;
@@ -18,23 +18,27 @@ public class RankProducts {
     }
 
     public List<RankedProduct> execute(Map<String, Double> weights) {
-        var products = productRepository.findAll().stream()
-                .map(product -> {
-                    double score = 0;
+        List<Product> products = productRepository.findAll();
 
-                    for (Entry<String, Double> weight : weights.entrySet()) {
-                        var criterion = criteria.get(weight.getKey());
-                        score += criterion.calculateScore(product) * weight.getValue();
-                    }
-
-                    return new RankedProduct(product, score);
-                })
-                .sorted((product1, product2) -> product1.score() > product2.score() ? -1 : 1)
+        return products.stream()
+                .map(product -> new RankedProduct(product, calculateTotalScore(product, weights)))
+                .sorted(Comparator.comparingDouble(RankedProduct::score).reversed())
                 .toList();
-
-        return products;
     }
 
-    public record RankedProduct(Product product, double score) {
+    private double calculateTotalScore(Product product, Map<String, Double> weights) {
+        return weights.entrySet().stream()
+                .mapToDouble(weightEntry -> {
+                    String criterionName = weightEntry.getKey();
+                    RankingCriterion criterion = criteria.get(criterionName);
+
+                    if (criterion == null) {
+                        return 0.0;
+                    }
+
+                    double weight = weightEntry.getValue();
+                    return criterion.calculateScore(product) * weight;
+                })
+                .sum();
     }
 }
