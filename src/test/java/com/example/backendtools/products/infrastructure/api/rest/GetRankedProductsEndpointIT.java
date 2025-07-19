@@ -39,4 +39,18 @@ public class GetRankedProductsEndpointIT {
                 .andExpect(jsonPath("$[2].product.id").value(3)) // Product 3, score: (80*0.8)+(3*0.2) = 64.6
                 .andExpect(jsonPath("$[2].score").value(64.6));
     }
+
+    @Test
+    void shouldReturnBadRequestForInvalidStockWeight() throws Exception {
+        // Arrange
+        String weightsParam = "sales:0.8,stock:invalid";
+
+        // Act
+        ResultActions result = mockMvc.perform(get("/products")
+                .queryParam("weights", weightsParam)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // Assert
+        result.andExpect(status().isBadRequest());
+    }
 }

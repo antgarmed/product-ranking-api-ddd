@@ -22,9 +22,7 @@ public class GetRankedProductsEndpoint {
     @GetMapping("/products")
     public List<RankedProductResponse> handle(@RequestParam("weights") String weights) {
         Map<String, Double> parsedWeights = WeightsParser.parse(weights);
-
         GetRankedProductsQuery query = new GetRankedProductsQuery(parsedWeights);
-
         return queryHandler.execute(query);
     }
 }

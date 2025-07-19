@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.example.backendtools.shared.domain.InvalidInputException;
+
 public class WeightsParser {
     private WeightsParser() {
     }
@@ -20,7 +22,7 @@ public class WeightsParser {
                             parts -> parts[0].trim(),
                             parts -> Double.parseDouble(parts[1].trim())));
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid weights format. Expected 'key1:value1,key2:value2'.");
+            throw new InvalidInputException("Invalid weights format. Expected 'key1:value1,key2:value2'.");
         }
     }
 }
