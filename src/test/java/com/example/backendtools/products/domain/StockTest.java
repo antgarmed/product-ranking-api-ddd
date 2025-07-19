@@ -1,6 +1,7 @@
 package com.example.backendtools.products.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 
@@ -20,5 +21,19 @@ public class StockTest {
 
         // Assert
         assertThat(availableSizes).isEqualTo(2);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenStockIsCreatedWithNegativeQuantity() {
+        // Arrange
+        var invalidStockMap = Map.of(
+                "S", -50,
+                "M", 0,
+                "L", 0);
+
+        // Act & Assert
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> Stock.of(invalidStockMap));
     }
 }
