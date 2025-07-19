@@ -12,7 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.backendtools.products.application.queries.GetProductsByRankQuery;
+import com.example.backendtools.products.application.queries.GetRankedProductsQuery;
+import com.example.backendtools.products.application.queries.GetRankedProductsQueryHandler;
 import com.example.backendtools.products.application.queries.RankedProductResponse;
 import com.example.backendtools.products.domain.Product;
 import com.example.backendtools.products.domain.ProductRepository;
@@ -22,18 +23,18 @@ import com.example.backendtools.products.domain.SalesCriterion;
 import com.example.backendtools.products.domain.StockRatioCriterion;
 
 @ExtendWith(MockitoExtension.class)
-class GetProductsByRankQueryTest {
+class GetRankedProductsQueryHandlerTest {
         @Mock
         private ProductRepository productRepository;
 
-        private GetProductsByRankQuery rankProducts;
+        private GetRankedProductsQueryHandler rankProducts;
 
         @BeforeEach
         void setUp() {
                 Map<String, RankingCriterion> criteria = Map.of(
                                 "sales", new SalesCriterion(),
                                 "stock", new StockRatioCriterion());
-                rankProducts = new GetProductsByRankQuery(productRepository, criteria);
+                rankProducts = new GetRankedProductsQueryHandler(productRepository, criteria);
         }
 
         @Test
@@ -48,12 +49,12 @@ class GetProductsByRankQueryTest {
 
                 when(productRepository.findAll()).thenReturn(List.of(product1, product2, product3));
 
-                Map<String, Double> weights = Map.of(
+                GetRankedProductsQuery query = new GetRankedProductsQuery(Map.of(
                                 "sales", 0.8,
-                                "stock", 0.2);
+                                "stock", 0.2));
 
                 // Act
-                List<RankedProductResponse> rankedProducts = rankProducts.execute(weights);
+                List<RankedProductResponse> rankedProducts = rankProducts.execute(query);
 
                 // Assert
                 assertThat(rankedProducts).hasSize(3);

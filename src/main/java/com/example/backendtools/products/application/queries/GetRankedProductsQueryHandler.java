@@ -8,26 +8,26 @@ import com.example.backendtools.products.domain.Product;
 import com.example.backendtools.products.domain.ProductRepository;
 import com.example.backendtools.products.domain.RankingCriterion;
 
-public class GetProductsByRankQuery {
+public class GetRankedProductsQueryHandler {
     private final ProductRepository productRepository;
     private final Map<String, RankingCriterion> criteria;
 
-    public GetProductsByRankQuery(ProductRepository productRepository, Map<String, RankingCriterion> criteria) {
+    public GetRankedProductsQueryHandler(ProductRepository productRepository, Map<String, RankingCriterion> criteria) {
         this.productRepository = productRepository;
         this.criteria = criteria;
     }
 
-    public List<RankedProductResponse> execute(Map<String, Double> weights) {
+    public List<RankedProductResponse> execute(GetRankedProductsQuery query) {
         List<Product> products = productRepository.findAll();
 
         return products.stream()
-                .map(product -> new RankedProductResponse(product, calculateTotalScore(product, weights)))
+                .map(product -> new RankedProductResponse(product, calculateTotalScore(product, query)))
                 .sorted(Comparator.comparingDouble(RankedProductResponse::score).reversed())
                 .toList();
     }
 
-    private double calculateTotalScore(Product product, Map<String, Double> weights) {
-        return weights.entrySet().stream()
+    private double calculateTotalScore(Product product, GetRankedProductsQuery query) {
+        return query.weights().entrySet().stream()
                 .mapToDouble(weightEntry -> {
                     String criterionName = weightEntry.getKey();
                     RankingCriterion criterion = criteria.get(criterionName);
