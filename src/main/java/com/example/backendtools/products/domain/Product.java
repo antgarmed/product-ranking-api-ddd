@@ -40,4 +40,8 @@ public class Product {
 
         return new Product(id, name, salesUnits, productStock);
     }
+
+    public int countAvailableSizes() {
+        return this.productStock.countAvailableSizes();
+    }
 }

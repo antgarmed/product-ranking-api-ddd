@@ -104,4 +104,23 @@ public class ProductTest {
             Product.of(id, name, salesUnits, invalidStock);
         });
     }
+
+    @Test
+    void shouldReturnCorrectCountOfAvailableSizesFromItsStock() {
+        // Arrange
+        int id = 1;
+        String name = "Valid Name";
+        int salesUnits = 100;
+        ProductStock stock = ProductStock.of(Map.of(
+                "S", 50,
+                "M", 0,
+                "L", 10));
+        Product product = Product.of(id, name, salesUnits, stock);
+
+        // Act
+        int availableSizes = product.countAvailableSizes();
+
+        // Assert
+        assertThat(availableSizes).isEqualTo(2);
+    }
 }
