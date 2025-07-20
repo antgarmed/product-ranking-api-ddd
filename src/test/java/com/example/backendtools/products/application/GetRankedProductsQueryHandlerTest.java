@@ -12,13 +12,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.example.backendtools.products.application.ports.RankingCriteriaPort;
 import com.example.backendtools.products.application.queries.GetRankedProductsQuery;
 import com.example.backendtools.products.application.queries.GetRankedProductsQueryHandler;
 import com.example.backendtools.products.application.queries.RankedProductResponse;
 import com.example.backendtools.products.domain.Product;
 import com.example.backendtools.products.domain.ProductRepository;
 import com.example.backendtools.products.domain.ProductStock;
-import com.example.backendtools.products.domain.RankingCriterion;
 import com.example.backendtools.products.domain.SalesCriterion;
 import com.example.backendtools.products.domain.StockRatioCriterion;
 
@@ -27,14 +27,17 @@ class GetRankedProductsQueryHandlerTest {
     @Mock
     private ProductRepository productRepository;
 
-    private GetRankedProductsQueryHandler rankProducts;
+    @Mock
+    private RankingCriteriaPort rankingCriteriaPort;
+
+    @Mock
+    private GetRankedProductsQueryHandler queryHandler;
 
     @BeforeEach
     void setUp() {
-        Map<String, RankingCriterion> criteria = Map.of(
-                "sales", new SalesCriterion(),
-                "stock", new StockRatioCriterion());
-        rankProducts = new GetRankedProductsQueryHandler(productRepository, criteria);
+        queryHandler = new GetRankedProductsQueryHandler(productRepository, rankingCriteriaPort);
+        when(rankingCriteriaPort.findByName("sales")).thenReturn(new SalesCriterion());
+        when(rankingCriteriaPort.findByName("stock")).thenReturn(new StockRatioCriterion());
     }
 
     @Test
@@ -54,7 +57,7 @@ class GetRankedProductsQueryHandlerTest {
                 "stock", 0.2));
 
         // Act
-        List<RankedProductResponse> rankedProducts = rankProducts.execute(query);
+        List<RankedProductResponse> rankedProducts = queryHandler.execute(query);
 
         // Assert
         assertThat(rankedProducts).hasSize(3);

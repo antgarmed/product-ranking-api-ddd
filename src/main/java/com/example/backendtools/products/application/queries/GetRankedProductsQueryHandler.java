@@ -2,10 +2,8 @@ package com.example.backendtools.products.application.queries;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-
+import com.example.backendtools.products.application.ports.RankingCriteriaPort;
 import com.example.backendtools.products.domain.Product;
 import com.example.backendtools.products.domain.ProductRepository;
 import com.example.backendtools.products.domain.RankingCriterion;
@@ -17,12 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 public class GetRankedProductsQueryHandler {
     private final ProductRepository productRepository;
-    private final Map<String, RankingCriterion> criteria;
+    private final RankingCriteriaPort rankingCriteriaPort;
 
-    public GetRankedProductsQueryHandler(ProductRepository productRepository,
-            @Qualifier("rankingCriteriaMap") Map<String, RankingCriterion> rankingCriteriaMap) {
+    public GetRankedProductsQueryHandler(ProductRepository productRepository, RankingCriteriaPort rankingCriteriaPort) {
         this.productRepository = productRepository;
-        this.criteria = rankingCriteriaMap;
+        this.rankingCriteriaPort = rankingCriteriaPort;
     }
 
     public List<RankedProductResponse> execute(GetRankedProductsQuery query) {
@@ -38,9 +35,10 @@ public class GetRankedProductsQueryHandler {
         return query.weights().entrySet().stream()
                 .mapToDouble(weightEntry -> {
                     String criterionName = weightEntry.getKey();
-                    RankingCriterion criterion = criteria.get(criterionName);
+                    RankingCriterion criterion = rankingCriteriaPort.findByName(criterionName);
 
                     if (criterion == null) {
+                        log.warn("Criterion not found for name: {}", criterionName);
                         return 0.0;
                     }
 
