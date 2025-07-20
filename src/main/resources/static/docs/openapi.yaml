@@ -1,0 +1,60 @@
+openapi: 3.1.0
+info:
+  title: Product Ranking API
+  version: 1.0.0
+tags:
+  - name: Products
+servers:
+  - url: http://localhost:8080/
+paths:
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Get a ranked list of products
+      operationId: listRankedProducts
+      parameters:
+        - in: query
+          name: weights
+          description: "Ranking criteria and their weights in 'key1:value1,key2:value2' format. The sum of weights should ideally be 1. Example: sales:0.7,stock:0.3"
+          required: true
+          schema:
+            type: string
+            example: "sales:0.7,stock:0.3"
+      responses:
+        '200':
+          description: A ranked list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RankedProductResponse'
+components:
+  schemas:
+    SizeBreakdown:
+      type: object
+      additionalProperties:
+        type: integer
+        minimum: 0
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        salesUnits:
+          type: integer
+          description: "Total units sold"
+        productStock:
+          $ref: '#/components/schemas/SizeBreakdown'
+    RankedProductResponse:
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/Product'
+        score:
+          type: number
+          format: double
+          description: "Calculated ranking score for the product."
