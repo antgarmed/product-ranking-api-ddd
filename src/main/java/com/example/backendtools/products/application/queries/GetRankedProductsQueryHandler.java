@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import com.example.backendtools.products.domain.Product;
 import com.example.backendtools.products.domain.ProductRepository;
 import com.example.backendtools.products.domain.RankingCriterion;
@@ -18,7 +20,7 @@ public class GetRankedProductsQueryHandler {
     private final Map<String, RankingCriterion> criteria;
 
     public GetRankedProductsQueryHandler(ProductRepository productRepository,
-            Map<String, RankingCriterion> rankingCriteriaMap) {
+            @Qualifier("rankingCriteriaMap") Map<String, RankingCriterion> rankingCriteriaMap) {
         this.productRepository = productRepository;
         this.criteria = rankingCriteriaMap;
     }

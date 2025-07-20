@@ -7,13 +7,18 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import com.example.backendtools.products.domain.RankingCriterion;
 import com.example.backendtools.shared.domain.Criterion;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 public class RankingConfiguration {
-    @Bean
+    @Bean("rankingCriteriaMap")
+    @Primary
     Map<String, RankingCriterion> rankingCriteriaMap(List<RankingCriterion> criteriaList) {
         return criteriaList.stream()
                 .collect(Collectors.toMap(
