@@ -30,6 +30,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/RankedProductResponse'
+              example:
+                - product:
+                    id: 1
+                    name: V-NECH BASIC SHIRT
+                    salesUnits: 100
+                    productStock:
+                      S: 4
+                      M: 9
+                      L: 0
+                  score: 80.4
 components:
   schemas:
     SizeBreakdown:
