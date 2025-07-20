@@ -1,5 +1,7 @@
 package com.example.backendtools.products.infrastructure.api.rest;
 
+import com.example.backendtools.BackendToolsApplication;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,9 +18,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Comparator;
+
 import java.util.List;
 
-@SpringBootTest
+@SpringBootTest(classes = BackendToolsApplication.class)
 @AutoConfigureMockMvc
 public class GetRankedProductsEndpointIT {
     @Autowired
